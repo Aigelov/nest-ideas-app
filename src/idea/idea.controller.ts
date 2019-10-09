@@ -1,8 +1,10 @@
-import {Body, Controller, Delete, Get, Logger, Param, Post, Put, UsePipes} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Logger, Param, Post, Put, UseGuards, UsePipes} from '@nestjs/common';
 
 import {IdeaDTO} from './idea.dto';
 import {IdeaService} from './idea.service';
 import {ValidationPipe} from '../shared/validation.pipe';
+import {AuthGuard} from "../shared/auth.guard";
+import {User} from "../user/user.decorator";
 
 @Controller('api/ideas')
 export class IdeaController {
@@ -12,16 +14,23 @@ export class IdeaController {
     private ideaService: IdeaService
   ) {}
 
+  private logData(options: any) {
+    options.user && this.logger.log(`USER ${JSON.stringify(options.user)}`);
+    options.data && this.logger.log(`DATA ${JSON.stringify(options.data)}`);
+    options.id && this.logger.log(`IDEA ${JSON.stringify((options.id))}`);
+  }
+
   @Get()
   showAllIdeas() {
     return this.ideaService.showAllIdeas();
   }
 
   @Post()
+  @UseGuards(new AuthGuard())
   @UsePipes(new ValidationPipe())
-  createIdea(@Body() data: IdeaDTO) {
-    this.logger.log(JSON.stringify(data));
-    return this.ideaService.createIdea(data);
+  createIdea(@User('id') user, @Body() data: IdeaDTO) {
+    this.logData({ user, data });
+    return this.ideaService.createIdea(user, data);
   }
 
   @Get(':id')
