@@ -73,18 +73,13 @@ export class IdeaService {
     return idea;
   }
 
-  async showAllIdeas(): Promise<IdeaRO[]> {
+  async showAllIdeas(page: number = 1, newest?: boolean): Promise<IdeaRO[]> {
     try {
-      // const queryBuilder = await getRepository(IdeaEntity)
-      //   .createQueryBuilder('idea')
-      //   .leftJoinAndSelect('idea.user', 'user');
-      // queryBuilder.where('1 = 1');
-      // queryBuilder.orderBy('idea.idea', 'DESC');
-      // const ideasCount = await queryBuilder.getCount();
-      // const ideas = await queryBuilder.getMany();
-      // return { ideasCount, ideas };
       const ideas = await this.ideaRepository.find({
-        relations: ['user', 'upvotes', 'downvotes', 'comments']
+        relations: ['user', 'upvotes', 'downvotes', 'comments'],
+        take: 10,
+        skip: 10 * (page - 1),
+        order: newest && { created: 'DESC' }
       });
       return ideas.map(idea => this.toResponseObject(idea));
     } catch (err) {
@@ -224,4 +219,19 @@ export class IdeaService {
     }
     return user.toResponseObject();
   }
+
+  // async showAllIdeasWithQueryBuilder(): Promise<IdeaRO[]> {
+  //   try {
+  //     const queryBuilder = await getRepository(IdeaEntity)
+  //       .createQueryBuilder('idea')
+  //       .leftJoinAndSelect('idea.user', 'user');
+  //     queryBuilder.where('1 = 1');
+  //     queryBuilder.orderBy('idea.idea', 'DESC');
+  //     const ideasCount = await queryBuilder.getCount();
+  //     const ideas = await queryBuilder.getMany();
+  //     return { ideasCount, ideas };
+  //   } catch (err) {
+  //     throw new HttpException(`Bad query ${err}`, HttpStatus.BAD_REQUEST)
+  //   }
+  // }
 }
