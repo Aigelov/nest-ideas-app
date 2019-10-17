@@ -19,14 +19,14 @@ export class UserResolver {
 
   @Query()
   user(@Args('username') username: string) {
-    return this.userService.read(username);
+    return this.userService.showUser(username);
   }
 
   @Query()
   @UseGuards(new AuthGuard())
   whoami(@Context('user') user) {
     const {username} = user;
-    return this.userService.read(username);
+    return this.userService.showUser(username);
     return;
   }
 

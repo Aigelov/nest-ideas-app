@@ -1,5 +1,5 @@
 type Comment {
-    id: ID!
+    id: ID
     created: String!
     comment: String!
 #    user: User
