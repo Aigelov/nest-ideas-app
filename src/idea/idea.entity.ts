@@ -1,10 +1,17 @@
 import {
-  Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn,
-  UpdateDateColumn
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
-import {UserEntity} from '../user/user.entity';
-import {CommentEntity} from "../comment/comment.entity";
+import { UserEntity } from '../user/user.entity';
+import { CommentEntity } from '../comment/comment.entity';
 
 @Entity('idea')
 export class IdeaEntity {
@@ -37,7 +44,7 @@ export class IdeaEntity {
   @OneToMany(
     type => CommentEntity,
     comment => comment.idea,
-    { cascade: true }
+    { cascade: true },
   )
   comments: CommentEntity[];
 }

@@ -1,24 +1,28 @@
-import {Body, Controller, Delete, Get, Logger, Param, Post, Put, Query, UseGuards, UsePipes} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Logger,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 
-import {IdeaDTO} from './idea.dto';
-import {IdeaService} from './idea.service';
-import {ValidationPipe} from '../shared/validation.pipe';
-import {AuthGuard} from '../shared/auth.guard';
-import {User} from '../user/user.decorator';
+import { IdeaDTO } from './idea.dto';
+import { IdeaService } from './idea.service';
+import { ValidationPipe } from '../shared/validation.pipe';
+import { AuthGuard } from '../shared/auth.guard';
+import { User } from '../user/user.decorator';
 
 @Controller('api/ideas')
 export class IdeaController {
   private logger = new Logger('IdeaController');
 
-  constructor(
-    private ideaService: IdeaService
-  ) {}
-
-  private logData(options: any) {
-    options.user && this.logger.log(`USER ${JSON.stringify(options.user)}`);
-    options.data && this.logger.log(`DATA ${JSON.stringify(options.data)}`);
-    options.id && this.logger.log(`IDEA ${JSON.stringify(options.id)}`);
-  }
+  constructor(private ideaService: IdeaService) {}
 
   @Get()
   showAllIdeas(@Query('page') page: number) {
@@ -49,7 +53,7 @@ export class IdeaController {
   updateIdea(
     @Param('id') id: string,
     @User('id') user: string,
-    @Body() data: Partial<IdeaDTO>
+    @Body() data: Partial<IdeaDTO>,
   ) {
     this.logData({ id, user, data });
     return this.ideaService.updateIdea(id, user, data);
@@ -59,7 +63,7 @@ export class IdeaController {
   @UseGuards(new AuthGuard())
   destroyIdea(
     @Param('id') id: string,
-    @User('id') user
+    @User('id') user,
   ) {
     this.logData({ id, user });
     return this.ideaService.destroyIdea(id, user);
@@ -91,5 +95,11 @@ export class IdeaController {
   unBookmarkIdea(@Param('id') id: string, @User('id') user: string) {
     this.logData({ id, user });
     return this.ideaService.unBookmark(id, user);
+  }
+
+  private logData(options: any) {
+    options.user && this.logger.log(`USER ${JSON.stringify(options.user)}`);
+    options.data && this.logger.log(`DATA ${JSON.stringify(options.data)}`);
+    options.id && this.logger.log(`IDEA ${JSON.stringify(options.id)}`);
   }
 }

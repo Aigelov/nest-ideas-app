@@ -1,6 +1,12 @@
-import {Injectable, CanActivate, ExecutionContext, HttpException, HttpStatus} from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import {GqlExecutionContext} from '@nestjs/graphql';
+import { GqlExecutionContext } from '@nestjs/graphql';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -21,7 +27,7 @@ export class AuthGuard implements CanActivate {
         return false;
       }
       ctx.user = await this.validateToken(ctx.headers.authorization);
-      return true
+      return true;
     }
   }
 
@@ -29,7 +35,7 @@ export class AuthGuard implements CanActivate {
     if (auth.split(' ')[0] !== 'Bearer') { // bearer token
       throw new HttpException(
         'Invalid token',
-        HttpStatus.FORBIDDEN
+        HttpStatus.FORBIDDEN,
       );
     }
     const token = auth.split(' ')[1];
